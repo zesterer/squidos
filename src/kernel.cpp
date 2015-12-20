@@ -33,12 +33,13 @@ void kernel_main()
 	//Initialize terminal
 	terminal_initialize();
 	
-	terminal_writestring("SquidOS version ");
-	terminal_putchar(int_to_char(VERSION_MAJOR));
-	terminal_putchar('.');
-	terminal_putchar(int_to_char(VERSION_MINOR));
-	terminal_putchar('.');
-	terminal_putchar(int_to_char(VERSION_RELEASE));
+	terminal_writestring("SquidOS version ", COLOR_WHITE);
+	terminal_putchar(int_to_char(VERSION_MAJOR), COLOR_WHITE);
+	terminal_putchar('.', COLOR_WHITE);
+	terminal_putchar(int_to_char(VERSION_MINOR), COLOR_WHITE);
+	terminal_putchar('.', COLOR_WHITE);
+	terminal_putchar(int_to_char(VERSION_RELEASE), COLOR_WHITE);
+	terminal_writestring(" test test test test test test test test test test test test test test test test test test test test test test test test test test test test ", COLOR_RED);
 }
 
 

@@ -5,7 +5,7 @@ OBJCOPY=i686-elf-objcopy
 BOOT_S="src/boot.s"
 BOOT_O="build/boot.o"
 
-KERNEL_C="src/kernel.c"
+KERNEL_C="src/kernel.cpp"
 KERNEL_O="build/kernel.o"
 
 LINKER_LD="src/linker.ld"
@@ -24,11 +24,11 @@ clean:
 	rm ${BOOT_O} ${KERNEL_O} ${SQUIDOS_ELF} ${SQUIDOS_BIN}
 
 all:
-	${C_COMPILER} -fpic -ffreestanding -c ${BOOT_S} -o ${BOOT_O}
+	${CXX_COMPILER} -fpic -ffreestanding -c ${BOOT_S} -o ${BOOT_O}
 	@echo "Compiled BOOT_S"
-	${C_COMPILER} -fpic -ffreestanding -std=gnu99 -c ${KERNEL_C} -o ${KERNEL_O} -O2 -Wall -Wextra
+	${CXX_COMPILER} -fpic -ffreestanding -std=gnu99 -c ${KERNEL_C} -o ${KERNEL_O} -O2 -Wall -Wextra
 	@echo "Compiled KERNEL_C"
-	${C_COMPILER} -T ${LINKER_LD} -o ${SQUIDOS_BIN} -ffreestanding -O2 -nostdlib ${BOOT_O} ${KERNEL_O} -lgcc
+	${CXX_COMPILER} -T ${LINKER_LD} -o ${SQUIDOS_BIN} -ffreestanding -O2 -nostdlib ${BOOT_O} ${KERNEL_O} -lgcc
 	@#${OBJCOPY} ${SQUIDOS_ELF} -O binary ${SQUIDOS_BIN}
 	@echo "Linked KERNEL_C & BOOT_S"
 	mkdir -p build/isodir/boot/grub

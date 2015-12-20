@@ -69,9 +69,9 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
 	terminal_buffer[index] = make_vgaentry(c, color);
 }
 
-void terminal_putchar(char c)
+void terminal_putchar(char c, enum vga_color fg)
 {
-	terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
+	terminal_putentryat(c, fg, terminal_column, terminal_row);
 	
 	terminal_column ++;
 	
@@ -85,10 +85,10 @@ void terminal_putchar(char c)
 	}
 }
 
-void terminal_writestring(const char* data)
+void terminal_writestring(const char* data, enum vga_color fg)
 {
 	size_t datalen = strlen(data);
 	
 	for (size_t i = 0; i < datalen; i ++)
-		terminal_putchar(data[i]);
+		terminal_putchar(data[i], fg);
 }
