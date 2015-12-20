@@ -71,18 +71,27 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
 
 void terminal_putchar(char c, enum vga_color fg)
 {
-	terminal_putentryat(c, fg, terminal_column, terminal_row);
-	
-	terminal_column ++;
+	switch (c)
+	{
+		case '\n':
+			terminal_row ++;
+			terminal_column = 0;
+			break;
+		
+		default:
+			terminal_putentryat(c, fg, terminal_column, terminal_row);
+			terminal_column ++;
+			break;
+	}
 	
 	if (terminal_column == VGA_WIDTH)
 	{
 		terminal_column = 0;
 		terminal_row ++;
-		
-		if (terminal_row == VGA_HEIGHT)
-			terminal_row = 0;
 	}
+	
+	if (terminal_row == VGA_HEIGHT)
+		terminal_row = 0;
 }
 
 void terminal_writestring(const char* data, enum vga_color fg)

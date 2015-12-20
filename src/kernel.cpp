@@ -39,7 +39,7 @@ void kernel_main()
 	terminal_putchar(int_to_char(VERSION_MINOR), COLOR_WHITE);
 	terminal_putchar('.', COLOR_WHITE);
 	terminal_putchar(int_to_char(VERSION_RELEASE), COLOR_WHITE);
-	terminal_writestring(" test test test test test test test test test test test test test test test test test test test test test test test test test test test test ", COLOR_RED);
+	terminal_writestring("\nHello, World!", COLOR_RED);
 }
 
 

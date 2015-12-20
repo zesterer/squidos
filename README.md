@@ -8,7 +8,7 @@ SquidOS is a x86-i686 (32-bit) operating system written in C++, C and x86 assemb
 
 ## Why does SquidOS exist?
 
-SquidOS is a personal project, and adventure into the unknown. It has no particular uses and isn't really designed to do anything in particular (which is convenient, since it does next to nothing).
+SquidOS is a personal project, an adventure into the unknown. It has no specific uses and isn't really designed to do anything in particular (which is convenient, since it does next to nothing).
 
 ## Why. WHY?
 
