@@ -1,6 +1,6 @@
-C_COMPILER=cross-build/bin/i686-elf-gcc
-CXX_COMPILER=cross-build/bin/i686-elf-g++
-OBJCOPY=cross-build/bin/i686-elf-objcopy
+C_COMPILER=i686-elf-gcc
+CXX_COMPILER=i686-elf-g++
+OBJCOPY=i686-elf-objcopy
 
 BOOT_S="src/boot.s"
 BOOT_O="build/boot.o"
