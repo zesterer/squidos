@@ -28,18 +28,18 @@
 	extern "C" //Use C to link kernel_main
 #endif
 
-void kernel_main()
+void kernelMain()
 {
 	//Initialize terminal
-	terminal_initialize();
+	Terminal::initialize();
 	
-	terminal_writestring("SquidOS version ", COLOR_WHITE);
-	terminal_putchar(int_to_char(VERSION_MAJOR), COLOR_WHITE);
-	terminal_putchar('.', COLOR_WHITE);
-	terminal_putchar(int_to_char(VERSION_MINOR), COLOR_WHITE);
-	terminal_putchar('.', COLOR_WHITE);
-	terminal_putchar(int_to_char(VERSION_RELEASE), COLOR_WHITE);
-	terminal_writestring("\nHello, World!", COLOR_RED);
+	Terminal::writeString("SquidOS version ", Terminal::VGAColor::WHITE);
+	Terminal::writeChar(int_to_char(VERSION_MAJOR), Terminal::VGAColor::WHITE);
+	Terminal::writeChar('.', Terminal::VGAColor::WHITE);
+	Terminal::writeChar(int_to_char(VERSION_MINOR), Terminal::VGAColor::WHITE);
+	Terminal::writeChar('.', Terminal::VGAColor::WHITE);
+	Terminal::writeChar(int_to_char(VERSION_RELEASE), Terminal::VGAColor::WHITE);
+	Terminal::writeString("\nHello, World!", Terminal::VGAColor::RED);
 }
 
 

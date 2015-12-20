@@ -26,7 +26,7 @@ clean:
 all:
 	${CXX_COMPILER} -fpic -ffreestanding -c ${BOOT_S} -o ${BOOT_O}
 	@echo "Compiled BOOT_S"
-	${CXX_COMPILER} -fpic -ffreestanding -std=gnu99 -c ${KERNEL_C} -o ${KERNEL_O} -O2 -Wall -Wextra
+	${CXX_COMPILER} -fpic -ffreestanding -std=c++11 -c ${KERNEL_C} -o ${KERNEL_O} -O2 -Wall -Wextra
 	@echo "Compiled KERNEL_C"
 	${CXX_COMPILER} -T ${LINKER_LD} -o ${SQUIDOS_BIN} -ffreestanding -O2 -nostdlib ${BOOT_O} ${KERNEL_O} -lgcc
 	@#${OBJCOPY} ${SQUIDOS_ELF} -O binary ${SQUIDOS_BIN}

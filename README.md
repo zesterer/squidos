@@ -4,7 +4,7 @@ A x86-i686 operating system written in C++
 
 ## What is SquidOS?
 
-SquidOS is a x86-i686 (32-bit) operating system written in C++, C and x86 assembler. Currently, SquidOS is nothing more than a very simplistic kernel. But with time and effort, it may become something more.
+SquidOS is a x86-i686 (32-bit) operating system written in C++, C and x86 assembler. Currently, SquidOS is nothing more than a very simplistic kernel bolted on to the end of the GRUB bootloader. But with time and effort, it may become something more.
 
 ## Why does SquidOS exist?
 
