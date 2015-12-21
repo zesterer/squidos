@@ -14,6 +14,8 @@ namespace SquidOS
 			extern char int_to_char(uint8_t v);
 
 			extern size_t strlen(const char* str);
+			
+			extern void wait(uint32_t time);
 		}
 	}
 }

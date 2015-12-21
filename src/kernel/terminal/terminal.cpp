@@ -7,47 +7,58 @@ namespace SquidOS
 	{
 		namespace Terminal
 		{
-			uint8_t Terminal::makeColor(VGAColor fg, VGAColor bg)
-			{
-				return fg | bg << 4;
-			}
-	
-			uint16_t Terminal::makeVGAEntry(char c, uint8_t color)
-			{
-				uint16_t c16 = c;
-				uint16_t color16 = color;
-				return c16 | color16 << 8;
-			}
-	
 			void Terminal::initialize()
 			{
 				terminal_row = 0;
 				terminal_column = 0;
-				terminal_color = makeColor(VGAColor::LIGHT_GREY, VGAColor::BLACK);
 				terminal_buffer = (uint16_t*)VGA_MEMORY;
 	
+				//Zero out the VGA screen
 				for (size_t y = 0; y < VGA_HEIGHT; y ++)
 				{
 					for (size_t x = 0; x < VGA_WIDTH; x ++)
 					{
 						const size_t index = y * VGA_WIDTH + x;
-						terminal_buffer[index] = makeVGAEntry(' ', terminal_color);
+						terminal_buffer[index] = 0x0000;
 					}
 				}
 			}
-	
-			void Terminal::setColor(uint8_t color)
+			
+			void Terminal::setForeColor(size_t x, size_t y, VGAColor color)
 			{
-				terminal_color = color;
+				if (color == VGAColor::TRANSPARENT)
+					return;
+				
+				const size_t index = y * VGA_WIDTH + x;
+				terminal_buffer[index] &= 0xF0FF;
+				terminal_buffer[index] |= color << 8;
 			}
-	
-			void Terminal::putEntryAt(char c, uint8_t color, size_t x, size_t y)
+			
+			void Terminal::setBackColor(size_t x, size_t y, VGAColor color)
+			{
+				if (color == VGAColor::TRANSPARENT)
+					return;
+				
+				const size_t index = y * VGA_WIDTH + x;
+				terminal_buffer[index] &= 0x0FFF;
+				terminal_buffer[index] |= color << 12;
+			}
+			
+			void Terminal::setCharacter(size_t x, size_t y, char character)
 			{
 				const size_t index = y * VGA_WIDTH + x;
-				terminal_buffer[index] = makeVGAEntry(c, color);
+				terminal_buffer[index] &= 0xFF00;
+				terminal_buffer[index] |= character;
+			}
+			
+			void Terminal::setText(size_t x, size_t y, char character, VGAColor fore, VGAColor back)
+			{
+				this->setCharacter(x, y, character);
+				this->setForeColor(x, y, fore);
+				this->setBackColor(x, y, back);
 			}
 	
-			void Terminal::writeChar(char c, VGAColor fg)
+			void Terminal::writeChar(char c, VGAColor fore, VGAColor back)
 			{
 				switch (c)
 				{
@@ -57,7 +68,7 @@ namespace SquidOS
 						break;
 		
 					default:
-						putEntryAt(c, fg, terminal_column, terminal_row);
+						this->setText(terminal_column, terminal_row, c, fore, back);
 						terminal_column ++;
 						break;
 				}
@@ -72,12 +83,12 @@ namespace SquidOS
 					terminal_row = 0;
 			}
 	
-			void Terminal::writeString(const char* str, VGAColor fg)
+			void Terminal::writeString(const char* str, VGAColor fore, VGAColor back)
 			{
 				size_t datalen = C::strlen(str);
 	
 				for (size_t i = 0; i < datalen; i ++)
-					writeChar(str[i], fg);
+					writeChar(str[i], fore, back);
 			}
 	
 			void Terminal::printTest(const char* str, bool success)

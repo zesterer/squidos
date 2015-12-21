@@ -12,23 +12,30 @@ namespace SquidOS
 	{
 		void Kernel::initialize()
 		{
-			this->terminal.initialize();
-		
 			//Initialize terminal
-			terminal.printTest("Started kernel", true);
-			terminal.printTest("Initialized terminal", true);
+			this->terminal.initialize();
+			
+			terminal.printTest("Bootstrap initialization", true);
+			terminal.printTest("Kernel instancing", true);
+			terminal.printTest("Terminal initialization", true);
 	
-			terminal.writeString("SquidOS v ", Terminal::VGAColor::LIGHT_GREY);
-			terminal.writeChar(C::int_to_char(VERSION_MAJOR), Terminal::VGAColor::WHITE);
-			terminal.writeChar('.', Terminal::VGAColor::WHITE);
+			terminal.writeString("SquidOS v", Terminal::VGAColor::WHITE, Terminal::VGAColor::BLACK);
+			terminal.writeChar(C::int_to_char(VERSION_MAJOR), Terminal::VGAColor::WHITE, Terminal::VGAColor::BLACK);
+			terminal.writeChar('.', Terminal::VGAColor::WHITE, Terminal::VGAColor::BLACK);
 			terminal.writeChar(C::int_to_char(VERSION_MINOR), Terminal::VGAColor::WHITE);
-			terminal.writeChar('.', Terminal::VGAColor::WHITE);
-			terminal.writeChar(C::int_to_char(VERSION_RELEASE), Terminal::VGAColor::WHITE);
-			terminal.writeChar('\n', Terminal::VGAColor::WHITE);
+			terminal.writeChar('.', Terminal::VGAColor::WHITE, Terminal::VGAColor::BLACK);
+			terminal.writeChar(C::int_to_char(VERSION_RELEASE), Terminal::VGAColor::WHITE, Terminal::VGAColor::BLACK);
+			terminal.writeChar('\n', Terminal::VGAColor::WHITE, Terminal::VGAColor::BLACK);
 	
 			terminal.writeString("> Welcome to SquidOS\n", Terminal::VGAColor::RED);
 			terminal.writeString("> If you see this text, then congratulations. The kernel booted correctly\n", Terminal::VGAColor::GREEN);
 			terminal.writeString("> If you don't see this text, something went horribly wrong.\n", Terminal::VGAColor::GREEN);
+			
+			while (true)
+			{
+				C::wait(64000000);
+				terminal.writeChar('.', Terminal::VGAColor::LIGHT_BLUE);
+			}
 		}
 	}
 }

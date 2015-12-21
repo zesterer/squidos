@@ -28,6 +28,8 @@ namespace SquidOS
 				LIGHT_MAGENTA = 13,
 				LIGHT_BROWN = 14,
 				WHITE = 15,
+				
+				TRANSPARENT = 1337,
 			};
 	
 			static const size_t VGA_WIDTH = 80;
@@ -38,17 +40,17 @@ namespace SquidOS
 			{
 				size_t terminal_row;
 				size_t terminal_column;
-				uint8_t terminal_color;
 				uint16_t* terminal_buffer;
 		
-				uint8_t makeColor(VGAColor fg, VGAColor bg);
-				inline uint16_t makeVGAEntry(char c, uint8_t color);
 				void initialize();
-				void setColor(uint8_t color);
-				void putEntryAt(char c, uint8_t color, size_t x, size_t y);
-				void writeChar(char c, VGAColor fg);
-				void writeString(const char* str, VGAColor fg);
+				void writeChar(char c, VGAColor fore = VGAColor::TRANSPARENT, VGAColor back = VGAColor::TRANSPARENT);
+				void writeString(const char* str, VGAColor fore = VGAColor::TRANSPARENT, VGAColor back = VGAColor::TRANSPARENT);
 				void printTest(const char* str, bool success = true);
+				
+				void setForeColor(size_t x, size_t y, VGAColor color);
+				void setBackColor(size_t x, size_t y, VGAColor color);
+				void setCharacter(size_t x, size_t y, char character);
+				void setText(size_t x, size_t y, char character, VGAColor fore = VGAColor::TRANSPARENT, VGAColor back = VGAColor::TRANSPARENT);
 			};
 		}
 	}

@@ -19,6 +19,13 @@ namespace SquidOS
 					ret ++;
 				return ret;
 			}
+			
+			void wait(uint32_t time)
+			{
+				volatile uint32_t i = time;
+				while (i != 0)
+					i --;
+			}
 		}
 	}
 }
