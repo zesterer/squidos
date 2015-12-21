@@ -1,40 +1,33 @@
-C_COMPILER=i686-elf-gcc
-CXX_COMPILER=i686-elf-g++
-OBJCOPY=i686-elf-objcopy
+COMPONENT_DIR=src
 
-BOOT_S="src/boot.s"
-BOOT_O="build/boot.o"
+BUILD_DIR=$(PWD)/build
+export BUILD_DIR
 
-KERNEL_C="src/kernel.cpp"
-KERNEL_O="build/kernel.o"
+GRUB_CFG=$(COMPONENT_DIR)/grub.cfg
 
-LINKER_LD="src/linker.ld"
+SQUIDOS_BIN=$(BUILD_DIR)/squidos.bin
+SQUIDOS_ISO=$(BUILD_DIR)/squidos.iso
 
-GRUB_CFG="src/grub.cfg"
-
-SQUIDOS_ELF="build/squidos.elf"
-
-SQUIDOS_BIN="build/squidos.bin"
-
-SQUIDOS_ISO="build/squidos.iso"
+.PHONY: all clean run kernel grub setup
 
 default: all
 
-clean:
-	rm ${BOOT_O} ${KERNEL_O} ${SQUIDOS_ELF} ${SQUIDOS_BIN}
+all: setup kernel grub
 
-all:
-	${CXX_COMPILER} -fpic -ffreestanding -c ${BOOT_S} -o ${BOOT_O}
-	@echo "Compiled BOOT_S"
-	${CXX_COMPILER} -fpic -ffreestanding -std=c++11 -c ${KERNEL_C} -o ${KERNEL_O} -O2 -Wall -Wextra
-	@echo "Compiled KERNEL_C"
-	${CXX_COMPILER} -T ${LINKER_LD} -o ${SQUIDOS_BIN} -ffreestanding -O2 -nostdlib ${BOOT_O} ${KERNEL_O} -lgcc
-	@#${OBJCOPY} ${SQUIDOS_ELF} -O binary ${SQUIDOS_BIN}
-	@echo "Linked KERNEL_C & BOOT_S"
-	mkdir -p build/isodir/boot/grub
-	cp ${SQUIDOS_BIN} build/isodir/boot/squidos.bin
-	cp ${GRUB_CFG} build/isodir/boot/grub/grub.cfg
-	grub2-mkrescue -o ${SQUIDOS_ISO} build/isodir
+clean:
+	test -d $(BUILD_DIR) || rm -r $(BUILD_DIR)/**
+
+setup:
+	test -d $(BUILD_DIR) || mkdir $(BUILD_DIR)
+
+kernel: setup
+	$(MAKE) -C $(COMPONENT_DIR)
+
+grub: kernel
+	mkdir -p $(BUILD_DIR)/isodir/boot/grub/
+	cp ${SQUIDOS_BIN} $(BUILD_DIR)/isodir/boot/squidos.bin
+	cp ${GRUB_CFG} $(BUILD_DIR)/isodir/boot/grub/grub.cfg
+	grub2-mkrescue -o $(SQUIDOS_ISO) $(BUILD_DIR)/isodir
 	@echo "Created bootable ISO"
 
 run:

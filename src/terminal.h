@@ -1,16 +1,23 @@
+#ifndef TERMINAL_H
+#define TERMINAL_H
+
+//----STANDARD----
+#include "stddef.h"
+#include "stdint.h"
+
 //----LOCAL----
 #include "string.h"
 
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
 
-size_t terminal_row;
-size_t terminal_column;
-uint8_t terminal_color;
-uint16_t* terminal_buffer;
-
 namespace Terminal
 {
+	extern size_t terminal_row;
+	extern size_t terminal_column;
+	extern uint8_t terminal_color;
+	extern uint16_t* terminal_buffer;
+
 	enum VGAColor
 	{
 		BLACK = 0,
@@ -31,47 +38,32 @@ namespace Terminal
 		WHITE = 15,
 	};
 
-	uint8_t makeColor(VGAColor fg, VGAColor bg)
+	inline uint8_t makeColor(VGAColor fg, VGAColor bg)
 	{
 		return fg | bg << 4;
 	}
 
-	uint16_t makeVGAEntry(char c, uint8_t color)
+	inline uint16_t makeVGAEntry(char c, uint8_t color)
 	{
 		uint16_t c16 = c;
 		uint16_t color16 = color;
 		return c16 | color16 << 8;
 	}
 
-	void initialize()
-	{
-		terminal_row = 0;
-		terminal_column = 0;
-		terminal_color = makeColor(VGAColor::LIGHT_GREY, VGAColor::BLACK);
-		terminal_buffer = (uint16_t*)0xB8000;
-	
-		for (size_t y = 0; y < VGA_HEIGHT; y ++)
-		{
-			for (size_t x = 0; x < VGA_WIDTH; x ++)
-			{
-				const size_t index = y * VGA_WIDTH + x;
-				terminal_buffer[index] = makeVGAEntry(' ', terminal_color);
-			}
-		}
-	}
+	extern void initialize();
 
-	void setColor(uint8_t color)
+	inline void setColor(uint8_t color)
 	{
 		terminal_color = color;
 	}
 
-	void putEntryAt(char c, uint8_t color, size_t x, size_t y)
+	inline void putEntryAt(char c, uint8_t color, size_t x, size_t y)
 	{
 		const size_t index = y * VGA_WIDTH + x;
 		terminal_buffer[index] = makeVGAEntry(c, color);
 	}
 
-	void writeChar(char c, VGAColor fg)
+	inline void writeChar(char c, VGAColor fg)
 	{
 		switch (c)
 		{
@@ -96,7 +88,7 @@ namespace Terminal
 			terminal_row = 0;
 	}
 
-	void writeString(const char* data, VGAColor fg)
+	inline void writeString(const char* data, VGAColor fg)
 	{
 		size_t datalen = strlen(data);
 	
@@ -104,3 +96,5 @@ namespace Terminal
 			writeChar(data[i], fg);
 	}
 }
+
+#endif
