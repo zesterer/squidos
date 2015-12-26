@@ -63,80 +63,141 @@ namespace SquidOS
 			
 			bool keys[4];
 			
+			bool conbuff[2][Terminal::VGA_WIDTH][Terminal::VGA_HEIGHT];
+			
+			conbuff[0][4][4] = true;
+			conbuff[0][5][5] = true;
+			conbuff[0][5][6] = true;
+			conbuff[0][4][6] = true;
+			conbuff[0][3][6] = true;
+			
+			conbuff[0][14][24] = true;
+			conbuff[0][13][25] = true;
+			conbuff[0][13][26] = true;
+			conbuff[0][14][26] = true;
+			conbuff[0][15][26] = true;
+			
+			int tick = 0;
+			
 			while (true)
 			{
 				C::wait(5000000);
 				//terminal.writeChar('.', Terminal::VGAColor::LIGHT_BLUE);
 				
-				char code = C::getScancode();
-				
-				switch (code)
+				if (true)
 				{
-					case 0x91:
-						keys[0] = false;
-						break;
-					case 0x11:
-						keys[0] = true;
-						break;
-					case 0x9F:
-						keys[1] = false;
-						break;
-					case 0x1F:
-						keys[1] = true;
-						break;
+					char code = C::getScancode();
+				
+					switch (code)
+					{
+						case 0x91:
+							keys[0] = false;
+							break;
+						case 0x11:
+							keys[0] = true;
+							break;
+						case 0x9F:
+							keys[1] = false;
+							break;
+						case 0x1F:
+							keys[1] = true;
+							break;
 					
-					case 0x97:
-						keys[2] = false;
-						break;
-					case 0x17:
-						keys[2] = true;
-						break;
-					case 0xA5:
-						keys[3] = false;
-						break;
-					case 0x25:
-						keys[3] = true;
-						break;
+						case 0x97:
+							keys[2] = false;
+							break;
+						case 0x17:
+							keys[2] = true;
+							break;
+						case 0xA5:
+							keys[3] = false;
+							break;
+						case 0x25:
+							keys[3] = true;
+							break;
 					
-					default:
-						break;
+						default:
+							break;
+					}
+				
+					if (code == 0x91)
+						ballh *= 5.0f;
+				
+					bally += ballv;
+					ballx += ballh;
+				
+					if (ballx <= 0 || ballx >= Terminal::VGA_WIDTH - 1)
+						ballh *= -1.0f;
+					if (bally <= 0 || bally >= Terminal::VGA_HEIGHT - 1)
+						ballv *= -1.0f;
+					
+					if (keys[0])
+						bat0 --;
+					if (keys[1])
+						bat0 ++;
+				
+					if (ballh < 0)
+						bat0 += sign((int)(bally - BAT_SIZE / 2) - bat0);
+				
+					if (ballh > 0)
+						bat1 += sign((int)(bally - BAT_SIZE / 2) - bat1);
+				
+					terminal.initialize();
+				
+					for (int i = 0; i < BAT_SIZE; i ++)
+					{
+						terminal.setText(0, bat0 + i, ' ', Terminal::VGAColor::WHITE, Terminal::VGAColor::RED);
+						terminal.setText(Terminal::VGA_WIDTH - 1, bat1 + i, ' ', Terminal::VGAColor::WHITE, Terminal::VGAColor::BLUE);
+					}
+				
+					terminal.setText(ballx, bally, ' ', Terminal::VGAColor::GREEN, Terminal::VGAColor::WHITE);
+				}
+				else
+				{
+					terminal.initialize();
+					
+					for (int x = 0; x < Terminal::VGA_WIDTH; x ++)
+					{
+						for (int y = 0; y < Terminal::VGA_HEIGHT; y ++)
+						{
+							conbuff[(tick + 1) % 2][x][y] = conbuff[tick % 2][x][y];
+						}
+					}
+					
+					//Conway
+					for (int x = 0; x < Terminal::VGA_WIDTH; x ++)
+					{
+						for (int y = 0; y < Terminal::VGA_HEIGHT; y ++)
+						{
+							int a = Terminal::VGA_WIDTH;
+							int b = Terminal::VGA_HEIGHT;
+							int neighbours = 0;
+							if (conbuff[tick % 2][(x - 1 + a) % Terminal::VGA_WIDTH][(y - 1 + b) % Terminal::VGA_HEIGHT]) neighbours ++;
+							if (conbuff[tick % 2][(x + 0 + a) % Terminal::VGA_WIDTH][(y - 1 + b) % Terminal::VGA_HEIGHT]) neighbours ++;
+							if (conbuff[tick % 2][(x + 1 + a) % Terminal::VGA_WIDTH][(y - 1 + b) % Terminal::VGA_HEIGHT]) neighbours ++;
+							if (conbuff[tick % 2][(x - 1 + a) % Terminal::VGA_WIDTH][(y + 0 + b) % Terminal::VGA_HEIGHT]) neighbours ++;
+							if (conbuff[tick % 2][(x + 1 + a) % Terminal::VGA_WIDTH][(y + 0 + b) % Terminal::VGA_HEIGHT]) neighbours ++;
+							if (conbuff[tick % 2][(x - 1 + a) % Terminal::VGA_WIDTH][(y + 1 + b) % Terminal::VGA_HEIGHT]) neighbours ++;
+							if (conbuff[tick % 2][(x + 0 + a) % Terminal::VGA_WIDTH][(y + 1 + b) % Terminal::VGA_HEIGHT]) neighbours ++;
+							if (conbuff[tick % 2][(x + 1 + a) % Terminal::VGA_WIDTH][(y + 1 + b) % Terminal::VGA_HEIGHT]) neighbours ++;
+							
+							if (conbuff[tick % 2][x][y])
+							{
+								if (neighbours < 2)
+									conbuff[(tick + 1) % 2][x][y] = false;
+								if (neighbours > 3)
+									conbuff[(tick + 1) % 2][x][y] = false;
+							}
+							else if (neighbours == 3)
+								conbuff[(tick + 1) % 2][x][y] = true;
+							
+							if (conbuff[(tick + 1) % 2][x][y])
+								terminal.setText(x, y, ' ', Terminal::VGAColor::BLACK, Terminal::VGAColor::GREEN);
+						}
+					}
 				}
 				
-				if (code == 0x91)
-					ballh *= 5.0f;
-				
-				bally += ballv;
-				ballx += ballh;
-				
-				if (ballx <= 0 || ballx >= Terminal::VGA_WIDTH - 1)
-					ballh *= -1.0f;
-				if (bally <= 0 || bally >= Terminal::VGA_HEIGHT - 1)
-					ballv *= -1.0f;
-					
-				if (keys[0])
-					bat0 --;
-				if (keys[1])
-					bat0 ++;
-				
-				if (ballh < 0)
-					bat0 += sign((int)(bally - BAT_SIZE / 2) - bat0);
-				
-				if (ballh > 0)
-					bat1 += sign((int)(bally - BAT_SIZE / 2) - bat1);
-				
-				terminal.initialize();
-				
-				for (int i = 0; i < BAT_SIZE; i ++)
-				{
-					terminal.setText(0, bat0 + i, ' ', Terminal::VGAColor::WHITE, Terminal::VGAColor::RED);
-					terminal.setText(Terminal::VGA_WIDTH - 1, bat1 + i, ' ', Terminal::VGAColor::WHITE, Terminal::VGAColor::BLUE);
-				}
-				
-				terminal.setText(ballx, bally, ' ', Terminal::VGAColor::GREEN, Terminal::VGAColor::WHITE);
-				
-				//code = C::scancodeToCharacter(code);
-				
-				//terminal.writeChar(code, Terminal::VGAColor::LIGHT_RED);
+				tick ++;
 			}
 		}
 	}
