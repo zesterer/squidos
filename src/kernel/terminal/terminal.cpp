@@ -9,8 +9,8 @@ namespace SquidOS
 		{
 			void Terminal::initialize()
 			{
-				terminal_row = 0;
-				terminal_column = 0;
+				terminal_x = 0;
+				terminal_y = 0;
 				terminal_buffer = (uint16_t*)VGA_MEMORY;
 	
 				//Zero out the VGA screen
@@ -63,24 +63,24 @@ namespace SquidOS
 				switch (c)
 				{
 					case '\n':
-						terminal_row ++;
-						terminal_column = 0;
+						terminal_y ++;
+						terminal_x = 0;
 						break;
 		
 					default:
-						this->setText(terminal_column, terminal_row, c, fore, back);
-						terminal_column ++;
+						this->setText(terminal_x, terminal_y, c, fore, back);
+						terminal_x ++;
 						break;
 				}
 	
-				if (terminal_column == VGA_WIDTH)
+				if (terminal_x == VGA_WIDTH)
 				{
-					terminal_column = 0;
-					terminal_row ++;
+					terminal_x = 0;
+					terminal_y ++;
 				}
 	
-				if (terminal_row == VGA_HEIGHT)
-					terminal_row = 0;
+				if (terminal_y == VGA_HEIGHT)
+					terminal_y = 0;
 			}
 	
 			void Terminal::writeString(const char* str, VGAColor fore, VGAColor back)

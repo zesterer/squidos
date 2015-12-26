@@ -11,6 +11,8 @@ namespace SquidOS
 		struct Kernel
 		{
 			Terminal::Terminal terminal;
+			
+			uint64_t IDT;
 		
 			void initialize();
 		};

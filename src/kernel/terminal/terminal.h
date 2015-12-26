@@ -38,8 +38,8 @@ namespace SquidOS
 	
 			struct Terminal
 			{
-				size_t terminal_row;
-				size_t terminal_column;
+				size_t terminal_x;
+				size_t terminal_y;
 				uint16_t* terminal_buffer;
 		
 				void initialize();

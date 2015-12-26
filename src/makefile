@@ -29,7 +29,7 @@ bootstrap:
 
 kernel: $(patsubst %.cpp,%.o,$(SRC_FILES))
 %.o: %.cpp
-	${CXX_COMPILER} -fpic -ffreestanding -std=c++11 -Ikernel -Ikernel/c -c $< -o $@ -O2 -Wall -Wextra
+	${CXX_COMPILER} -fpic -ffreestanding -std=gnu++11 -Ikernel -Ikernel/c -c $< -o $@ -O2 -Wall -Wextra
 	@echo "Compiled KERNEL_C and TERMINAL_C"
 
 link: $(SRC_FILES:%.cpp=%.o)
